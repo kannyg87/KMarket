@@ -1,12 +1,18 @@
-import React, { createContext } from 'react'
+import React, { createContext, useEffect, useState } from "react";
+import { useFetcher } from "react-router-dom";
 /*when we create context we need two things:
 actual context object and the context provider component  */
 // creating context object
 const UserContext = createContext();
-console.log(UserContext)
+console.log("context user", UserContext);
 
 // context provider component
 function UserProvider({ children }) {
-  return <UserContext.Provider value={null}>{ children }</UserContext.Provider>
+  const [user, setUser] = useState("Kanny");
+  return (
+    <UserContext.Provider value={{ user, setUser }}>
+      {children}
+    </UserContext.Provider>
+  );
 }
-export { UserContext, UserProvider }
+export { UserContext, UserProvider };
