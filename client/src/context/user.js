@@ -1,5 +1,4 @@
 import React, { createContext, useEffect, useState } from "react";
-import { useFetcher } from "react-router-dom";
 /*when we create context we need two things:
 actual context object and the context provider component  */
 // creating context object

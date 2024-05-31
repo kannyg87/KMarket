@@ -1,28 +1,34 @@
-// src/Header.js
-
-import React, {useContext} from 'react';
-import { Link } from 'react-router-dom';
-import '../index.css'; 
-import { UserContext } from '../context/user';
+import React, { useContext } from "react";
+import { NavLink } from "react-router-dom";
+import "../index.css";
+import { UserContext } from "../context/user";
 
 const Header = () => {
-  const {user, setUser} = useContext(UserContext)
-  console.log(user)
+  const { user } = useContext(UserContext);
+
   return (
     <header className="header">
       <div className="container">
-        <h1 className="logo">MyApp</h1>
+        <h1 className="logo">KMarket</h1>
+        <h1>Hello, {user}</h1>
         <nav className="nav">
-          <h1> hello {user}</h1>
-          <ul>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/about">About</Link></li>
-            <li><Link to="/contact">Contact</Link></li>
-          </ul>
+          <NavLink to="/home" className="nav-link">
+            Home
+          </NavLink>
+          <NavLink to="/about" className="nav-link">
+            About
+          </NavLink>
+          <NavLink to="/login" className="nav-link">
+            Login
+          </NavLink>
+          <NavLink to="/profile" className="nav-link">
+            Profile
+          </NavLink>
         </nav>
       </div>
     </header>
   );
-}
+};
+
 
 export default Header;

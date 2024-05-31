@@ -48,7 +48,16 @@ flask db upgrade head
 ```
 
 ### Tools that have been used:
-- `react-router-dom` 6
+- `react-router-dom`v6
 - React Context
 
 ### Client side:
+## Building the Client Side with UseContext to Prevent Prop Drilling
+
+To manage state and prevent prop drilling, we'll use the `useContext` hook. This allows us to share state across components without having to pass props down through multiple levels.
+
+## Using React Router Dom v6 with Nested Routes
+
+We will use React Router Dom v6 to handle routing in our application. Nested routes can be defined using the `children` property. To render these nested routes, you need to include the `Outlet` component in your parent component.
+
+
