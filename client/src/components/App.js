@@ -11,6 +11,7 @@ function App() {
       <UserProvider>
         <Header />
         <Outlet /> {/* This renders the child routes */}
+
       </UserProvider>
     </>
   );

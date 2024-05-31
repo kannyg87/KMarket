@@ -61,3 +61,14 @@ To manage state and prevent prop drilling, we'll use the `useContext` hook. This
 We will use React Router Dom v6 to handle routing in our application. Nested routes can be defined using the `children` property. To render these nested routes, you need to include the `Outlet` component in your parent component.
 
 
+## Using Formik and Yup for Form Validation
+
+To install Formik, run the following command:
+
+```sh
+npm install --save formik
+```
+To install Yup, run the following command:
+```sh
+npm install yup
+```
