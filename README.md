@@ -104,3 +104,17 @@ it is WSGi library It includes a number of features that will come in handy as w
 - Routing, auto-generation and management of URLs.
 - A development server.
 - A testing framework that does not require a running server.
+
+
+# Seeding the database
+Here is an example of how to add a user to the database:
+
+```python
+users.append(Admin(name="admin", email="admin@gmail.com", password="1234"))
+db.session.add_all(users)
+db.session.commit()
+```
+then run
+```sh
+python seed.py
+```
