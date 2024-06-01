@@ -72,3 +72,35 @@ To install Yup, run the following command:
 ```sh
 npm install yup
 ```
+
+
+### Client side:
+Run `pipenv install` to install the dependencies and `pipenv shell` to enter your virtual environment before running your code.
+
+```sh
+pipenv install
+pipenv shell
+```
+Change into the server directory and configure the FLASK_APP and FLASK_RUN_PORT environment variables:
+
+```sh
+cd server
+export FLASK_APP=app.py
+export FLASK_RUN_PORT=5555
+```
+
+Let's create the database app.db with an empty user table:
+```sh
+flask db init
+flask db migrate -m "Initial migration."
+flask db upgrade head
+```
+
+## Werkzeug
+it is WSGi library It includes a number of features that will come in handy as we start to build our first Python web applications:
+
+- An in-browser debugger.
+- Robust classes for requests and responses.
+- Routing, auto-generation and management of URLs.
+- A development server.
+- A testing framework that does not require a running server.
