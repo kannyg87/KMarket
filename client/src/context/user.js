@@ -1,17 +1,27 @@
 import React, { createContext, useEffect, useState } from "react";
-/*when we create context we need two things:
-actual context object and the context provider component  */
-// creating context object
-const UserContext = createContext();
-console.log("context user", UserContext);
 
-// context provider component
+// Creating context object
+const UserContext = createContext();
+
+// Context provider component
 function UserProvider({ children }) {
-  const [user, setUser] = useState("Kanny");
+  const [user, setUser] = useState({ name: "", email: "", password: "" }); // Initialized with default properties
+
+  useEffect(() => {
+    fetch(`http://127.0.0.1:5555/login`)
+      .then((r) => r.json())
+      .then((data) => {
+        console.log('Fetched user:', data);
+        setUser(data);
+      })
+      .catch((error) => console.error('Error fetching user:', error));
+  }, []); // Empty dependency array ensures the effect runs only once
+
   return (
     <UserContext.Provider value={{ user, setUser }}>
       {children}
     </UserContext.Provider>
   );
 }
+
 export { UserContext, UserProvider };

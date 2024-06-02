@@ -32,7 +32,6 @@ function RegistrationForm () {
   })
 
   const onSubmit = (values,onSubmitProps) => {
-    console.log("form Data",values)
     onSubmitProps.resetForm();
   }
   return (

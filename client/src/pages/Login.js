@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import FormikControl from "../components/formikControl";
+import { UserContext } from '../context/user';
 
 function Login() {
   const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext);
+  console.log('User in context:', user);
 
   const initialValues = {
     email: '',
@@ -20,12 +23,15 @@ function Login() {
   });
 
   const onSubmit = (values, onSubmitProps) => {
-    console.log("form Data", values);
-    onSubmitProps.resetForm();
-  };
+    const foundUser = user.find(u => u.email === values.email && u.password === values.password);
+    if (foundUser) {
+      setUser(foundUser);
+      navigate('/home');
+    } else {
+      alert('Invalid email or password');
+    }
 
-  const redirectToProfile = () => {
-    navigate('/profile'); 
+    onSubmitProps.resetForm();
   };
 
   return (
@@ -51,7 +57,7 @@ function Login() {
           <button type='submit' disabled={!formik.isValid}>
             Login
           </button>
-          <button type='button' onClick={redirectToProfile}>
+          <button type='button' onClick={() => navigate('/signup')}>
             Signup
           </button>
         </Form>

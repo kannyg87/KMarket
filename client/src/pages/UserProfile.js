@@ -8,7 +8,7 @@ function UserProfile() {
   return (
     <main>
       <h1>This is user profile component</h1>
-      <h1>ues name is: {user}</h1>
+      <h1>ues name is: {user.name}</h1>
       <RegistrationForm />
     </main>
   );
