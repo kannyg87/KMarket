@@ -7,6 +7,11 @@ const UserContext = createContext();
 function UserProvider({ children }) {
   const [user, setUser] = useState({ name: "", email: "", password: "" }); // Initialized with default properties
 
+
+  const logout = () => {
+    setUser(null)
+  }
+
   useEffect(() => {
     fetch(`http://127.0.0.1:5555/login`)
       .then((r) => r.json())
@@ -18,7 +23,7 @@ function UserProvider({ children }) {
   }, []); // Empty dependency array ensures the effect runs only once
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, logout }}>
       {children}
     </UserContext.Provider>
   );

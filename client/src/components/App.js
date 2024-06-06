@@ -1,18 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Header from "./Header";
-// import { Switch, Route } from "react-router-dom";
-import { UserProvider } from "../context/user";
+import { UserProvider, UserContext } from "../context/user";
 import { Outlet } from "react-router-dom";
+import "../index.css";
+import Login from "../pages/Login";
 
 function App() {
   return (
+    <UserProvider>
+      <AppContent />
+    </UserProvider>
+  );
+}
+
+function AppContent() {
+  const { user } = React.useContext(UserContext); // Access user context value
+
+  return (
     <>
       <h1>Project Client</h1>
-      <UserProvider>
-        <Header />
-        <Outlet /> {/* This renders the child routes */}
-
-      </UserProvider>
+      <Header /> {/* Pass the user context value to Header */}
+      {!user ? null : <Login />}
+      <Outlet /> {/* This renders the child routes */}
     </>
   );
 }

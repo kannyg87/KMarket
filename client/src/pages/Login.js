@@ -8,7 +8,6 @@ import { UserContext } from '../context/user';
 function Login() {
   const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
-  console.log('User in context:', user);
 
   const initialValues = {
     email: '',
@@ -23,7 +22,7 @@ function Login() {
   });
 
   const onSubmit = (values, onSubmitProps) => {
-    const foundUser = user.find(u => u.email === values.email && u.password === values.password);
+    const foundUser = user && user.find(u => u.email === values.email && u.password === values.password);
     if (foundUser) {
       setUser(foundUser);
       navigate('/home');
@@ -35,6 +34,7 @@ function Login() {
   };
 
   return (
+   
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
