@@ -15,7 +15,7 @@ const Header = () => {
           <NavLink to="/home" className="nav-link">
             Home
           </NavLink>
-          <NavLink to="/about" className="nav-link">
+          <NavLink to="https://6660ff4786958d10a5b9af08--stirring-panda-8201e8.netlify.app/" target="_blank" className="nav-link">
             About
           </NavLink>
           <NavLink to="/login" className="nav-link">
