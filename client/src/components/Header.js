@@ -1,23 +1,16 @@
 import React, { useContext } from "react";
-import { NavLink, useLocation } from "react-router-dom"; // Import useLocation hook
+import { NavLink } from "react-router-dom";
 import { UserContext } from "../context/user";
 
 const Header = () => {
-  const { user, logout } = useContext(UserContext); // Access user context value and logout function
-  const location = useLocation(); // Get current location
-
-  const handleLogout = () => {
-    logout(); // Call the logout function when the logout link is clicked
-  };
+  const { user, logout } = useContext(UserContext);
 
   return (
     <header className="header">
       <div className="container">
         <h1 className="logo">KMarket</h1>
         <div>
-          <h1>Hello, {user?.name || "Guest"}</h1> {/* Use optional chaining and fallback */}
-          {!user && <NavLink to="/login" className="nav-link">Log In</NavLink>} {/* Render login link if user is not logged in */}
-          {user && location.pathname !== "/" && <NavLink to="#" className="nav-link" onClick={handleLogout}>Logout</NavLink>} {/* Render logout link if user is logged in and not on "/" route */}
+          <h1>Hello, {user?.name || "Guest"}</h1>
         </div>
         <nav className="nav">
           <NavLink to="/home" className="nav-link">

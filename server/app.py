@@ -41,5 +41,12 @@ def logon():
 
     return response
 
+@app.route('/cookie')
+def cookie():
+    respone = make_response(jsonify({
+        "cookies":request.cookies
+    }),200)
+    return respone
+
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
