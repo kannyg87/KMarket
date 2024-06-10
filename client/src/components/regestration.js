@@ -1,7 +1,9 @@
-import React from 'react';
-import { Formik, Form } from 'formik';
+import React, { useState, useContext } from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import FormikControl from "./formikControl";
+import FormikControl from "../components/formikControl"; 
+import { UserContext } from '../context/user';
+import { useNavigate } from 'react-router-dom';
 
 function RegistrationForm() {
   const options = [
@@ -9,6 +11,8 @@ function RegistrationForm() {
     { key: 'Telephone', value: 'telephonemoc' }
   ];
 
+  const { setUser } = useContext(UserContext);
+  const navigate = useNavigate();
   const initialValues = {
     email: '',
     password: '',
@@ -22,9 +26,7 @@ function RegistrationForm() {
       .email('Invalid email format')
       .required('Required'),
     password: Yup.string().required('Required'),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref('password'), ''], 'Passwords must match')
-      .required('Required'),
+    
     modeOfContact: Yup.string().required('Required'),
     phone: Yup.string().when('modeOfContact', {
       is: 'telephonemoc',
@@ -33,6 +35,23 @@ function RegistrationForm() {
   });
 
   const onSubmit = (values, onSubmitProps) => {
+    fetch('/users', {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(values)
+    })
+      .then(res => res.json())
+      .then(user => {
+        setUser(user);
+        navigate('/home');
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+
     onSubmitProps.resetForm();
   };
 
@@ -55,12 +74,6 @@ function RegistrationForm() {
             type='password'
             label='Password'
             name='password'
-          />
-          <FormikControl
-            control='input'
-            type='password'
-            label='Confirm Password'
-            name='confirmPassword'
           />
           <FormikControl
             control='radio'

@@ -24,7 +24,6 @@ api.add_resource(Newsletter, '/newsletters')
 
 @app.route('/login')
 def logon():
-
     admins = []
     for admin in Admin.query.all():
         admin_dict = {
@@ -43,12 +42,54 @@ def logon():
 
 @app.route('/cookie')
 def cookie():
-    respone = make_response(jsonify({
-        "cookies":request.cookies
-    }),200)
-    return respone
+    response = make_response(jsonify({
+        "cookies": request.cookies
+    }), 200)
+    return response
+
+class User(Resource):
+    def post(self):
+        form_json = request.get_json()
+        new_user = User(
+            name=form_json['name'],
+            email=form_json['email'], 
+            is_select=form_json['is_select'], 
+            phone_number=form_json['phone_number'],
+            admin=form_json['admin']
+        )
+        new_user.password = form_json['password']
+        db.session.add(new_user)
+        db.session.commit()
+        # session['user_id'] = new_user.id
+        response = make_response(
+            new_user.to_dict(),
+            201
+        )
+        return response
+
+api.add_resource(User, '/users') 
 
 
+# class Register(Resource):
+#     def post(self):
+#         form_json = request.get_json()
+#         new_user = User(
+#             name=form_json['name'],
+#             email=form_json['email'], 
+#             is_select=form_json['is_select'], 
+#             phone_number=form_json['phone_number'],
+#             admin=form_json['admin']
+#         )
+#         new_user.password = form_json['password']
+#         db.session.add(new_user)
+#         db.session.commit()
+#         response = make_response(
+#             new_user.to_dict(),
+#             201
+#         )
+#         return response
+
+# api.add_resource(Register, '/signup')   
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
