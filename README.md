@@ -118,3 +118,10 @@ then run
 ```sh
 python seed.py
 ```
+
+
+# password: 
+import bcrypt in the config and invoke it, and we need to run 
+```sh
+pip install flask-bcrypt
+```

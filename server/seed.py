@@ -17,28 +17,27 @@ if __name__ == '__main__':
         print("Starting seed...")
         Admin.query.delete()
         User.query.delete()
-        # Seed code goes here!
-        admins = []
-        admins.append(
-            Admin(name="admin", email="admin@gmail.com", password="1234"))
-        admins.append(
-            Admin(name="admin2", email="admin2@gmail.com", password="1234"))
-        admins.append(
-            Admin(name="kanny", email="kanny.ghafour87@gmail.com", password="1234"))
+        
+        # Seed admins
+        admins = [
+            Admin(name="admin", email="admin@gmail.com", password="1234"),
+            Admin(name="admin2", email="admin2@gmail.com", password="1234"),
+            Admin(name="kanny", email="kanny.ghafour87@gmail.com", password="1234")
+        ]
         db.session.add_all(admins)
         db.session.commit()
 
+        # Seed users
         users = []
-        for n in range(10):
+        for _ in range(10):
             user = User(
                 name=fake.name(),
                 email=fake.unique.email(),
-                password=fake.password(),
-                confPassword=fake.password(),
+                _password=fake.password(),
                 is_select=fake.boolean(),
                 phone_number=fake.phone_number()
             )
-
             users.append(user)
+        
         db.session.add_all(users)
         db.session.commit()
