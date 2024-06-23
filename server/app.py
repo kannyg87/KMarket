@@ -47,7 +47,7 @@ def cookie():
     }), 200)
     return response
 
-class User(Resource):
+class Users(Resource):
     def post(self):
         form_json = request.get_json()
         new_user = User(
@@ -67,7 +67,7 @@ class User(Resource):
         )
         return response
 
-api.add_resource(User, '/users') 
+api.add_resource(Users, '/users') 
 
 
 # class Register(Resource):
