@@ -1,5 +1,6 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy.orm import validates
 from config import db, bcrypt
 
 class User(db.Model, SerializerMixin):
@@ -9,9 +10,8 @@ class User(db.Model, SerializerMixin):
     name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
     _password = db.Column(db.String, nullable=False)
-    is_select = db.Column(db.Boolean, default=False)
     phone_number = db.Column(db.String, nullable=True)
-    admin = db.Column(db.String, default=False)
+    admin = db.Column(db.Boolean, default=False)
 
     @hybrid_property
     def password(self):
@@ -25,9 +25,23 @@ class User(db.Model, SerializerMixin):
     def authenticate(self, password):
         return bcrypt.check_password_hash(self._password, password.encode('utf-8'))
 
-    def __repr__(self):
-        return f'<User {self.name} {self.email} {self.is_select} {self.phone_number}>'
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+            'phone_number': self.phone_number,
+            'admin': self.admin
+        }
+    
+    @validates('email')
+    def validates_email(self, key, email_input):
+        if '@' not in email_input:
+            raise ValueError("wrong email format")
+        return email_input
 
+    def __repr__(self):
+        return f'<User {self.name} {self.email} {self.phone_number}>'
 
 class Admin(db.Model, SerializerMixin):
     __tablename__ = 'admins'
@@ -38,4 +52,4 @@ class Admin(db.Model, SerializerMixin):
     password = db.Column(db.String, nullable=False)
 
     def __repr__(self):
-        return f'<Admin {self.name} {self.email} {self.password}>'
+        return f'<Admin {self.name} {self.email}>'

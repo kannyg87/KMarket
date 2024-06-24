@@ -1,8 +1,8 @@
-import React from "react";
-import Header from "./Header";
-import { UserProvider } from "../context/user";
+import React, { useContext } from "react";
+import { UserProvider, UserContext } from "../context/user";
 import { Outlet } from "react-router-dom";
 import "../index.css";
+import Login from "./login";
 
 function App() {
   return (
@@ -13,10 +13,12 @@ function App() {
 }
 
 function AppContent() {
+  const { user } = useContext(UserContext);
   return (
     <>
       <h1>Project Client</h1>
-      <Header />
+       <Login /> 
+        
       <Outlet />
     </>
   );

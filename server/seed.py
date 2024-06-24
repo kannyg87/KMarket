@@ -34,7 +34,6 @@ if __name__ == '__main__':
                 name=fake.name(),
                 email=fake.unique.email(),
                 _password=fake.password(),
-                is_select=fake.boolean(),
                 phone_number=fake.phone_number()
             )
             users.append(user)

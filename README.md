@@ -95,6 +95,25 @@ flask db init
 flask db migrate -m "Initial migration."
 flask db upgrade head
 ```
+And for delete the db 
+```sh
+rm -rf migrations
+```
+## Implement validations and error handling
+we can add to the column when we first create a column ``` nullable=False``` that is mean it can not be no value 
+```sh
+name = db.Column(db.String, nullable=False)
+```
+we are going to import validates from sqlalchemy.orm and use validates decorator, 
+
+```sh
+@validates('email')
+def validates_email(self, key, email_input):
+    if '@' not in email_input:
+        raise ValueError("wrong email format")
+    return email_input
+```
+we can test that through flask shell
 
 ## Werkzeug
 it is WSGi library It includes a number of features that will come in handy as we start to build our first Python web applications:
