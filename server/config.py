@@ -15,6 +15,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 bcrypt = Bcrypt(app)
 
+app.secret_key = b'Z\x9e&T\x87\xe5\xc1Q6|\xdaJ\xc7I\x87\xe6'
+
 # Define metadata, instantiate db
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
