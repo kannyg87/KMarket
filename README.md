@@ -144,3 +144,6 @@ import bcrypt in the config and invoke it, and we need to run
 ```sh
 pip install flask-bcrypt
 ```
+
+# Session
+hold user info for us, allow some information between requests, no need to make query every time 

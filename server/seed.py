@@ -2,7 +2,7 @@
 
 # Standard library imports
 from random import randint, choice as rc
-from models import Admin, User
+from models import Admin, User, Login
 
 # Remote library imports
 from faker import Faker
@@ -17,6 +17,7 @@ if __name__ == '__main__':
         print("Starting seed...")
         Admin.query.delete()
         User.query.delete()
+        Login.query.delete()
         
         # Seed admins
         admins = [
@@ -29,6 +30,7 @@ if __name__ == '__main__':
 
         # Seed users
         users = []
+        logins = []
         for _ in range(10):
             user = User(
                 name=fake.name(),
@@ -36,7 +38,14 @@ if __name__ == '__main__':
                 _password=fake.password(),
                 phone_number=fake.phone_number()
             )
-            users.append(user)
+            db.session.add(user)
+            db.session.commit()
+
+            login = Login(
+                email=user.email,
+                user_id=user.id
+            )
+            logins.append(login)
         
-        db.session.add_all(users)
+        db.session.add_all(logins)
         db.session.commit()

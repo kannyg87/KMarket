@@ -1,11 +1,12 @@
-from flask import Flask, abort, request, current_app, jsonify, make_response
+from flask import Flask, abort, request, current_app, jsonify, make_response, session
 from flask_restful import Api, Resource
-from config import app, db, api  
-from models import User, Admin
+from config import app, db, api
+from models import Login, User, Admin
 from flask_cors import CORS
+from sqlalchemy.exc import IntegrityError
 
 CORS(app)
-# Views go here!
+
 @app.route('/')
 def index():
     host = request.headers.get("Host")
@@ -13,41 +14,14 @@ def index():
     return f'''<h1>The host for this page is {host}</h1>
                 <h2>The name of this application is {appname}</h2>'''
 
-class Newsletter(Resource):
-    def get(self):
-        return {"newsletter": "it's a beautiful 108 out in Austin today"}
-
-api.add_resource(Newsletter, '/newsletters')
-
-@app.route('/login')
-def login():
-    admins = []
-    for admin in Admin.query.all():
-        admin_dict = {
-            "name": admin.name,
-            "email": admin.email,
-            # Avoid returning password directly, it's for demo purpose only.
-        }
-        admins.append(admin_dict)
-
-    response = make_response(
-        jsonify(admins),
-        200
-    )
-
-    return response
-
-@app.route('/cookie')
-def cookie():
-    response = make_response(jsonify({
-        "cookies": request.cookies
-    }), 200)
-    return response
-
 class Users(Resource):
     def post(self):
         form_json = request.get_json()
         try:
+            email_exists = User.query.filter_by(email=form_json['email']).first()
+            if email_exists:
+                abort(409, description="Email already exists")
+
             new_user = User(
                 name=form_json['name'],
                 email=form_json['email'], 
@@ -55,18 +29,89 @@ class Users(Resource):
                 admin=form_json['admin']
             )
             new_user.password = form_json['password']
+            db.session.add(new_user)
+            db.session.commit()
+
+            new_login = Login(
+                email=form_json['email'],
+                user_id=new_user.id
+            )
+            db.session.add(new_login)
+            db.session.commit()
+
+            session['user_id'] = new_user.id
+            response = make_response(jsonify(new_user.to_dict()), 201)
         except ValueError as e:
-            abort(422,e.args[0])
-        db.session.add(new_user)
-        db.session.commit()
-        
-        response = make_response(
-            jsonify(new_user.to_dict()),
-            201
-        )
+            db.session.rollback()
+            print(f"ValueError: {e}")
+            abort(422, description=str(e))
+        except IntegrityError as e:
+            db.session.rollback()
+            print(f"IntegrityError: {e}")
+            abort(409, description="Database integrity error")
+        except Exception as e:
+            db.session.rollback()
+            print(f"Unexpected Error: {e}")
+            abort(500, description="Internal Server Error")
+
         return response
 
-api.add_resource(Users, '/users') 
+api.add_resource(Users, '/users')
+
+class Logins(Resource):
+    def post(self):
+        form_json = request.get_json()
+        try:
+            user = User.query.filter_by(email=form_json['email']).first()
+            if not user:
+                abort(404, description="User not found")
+
+            new_login = Login(
+                email=form_json['email'],
+                user_id=user.id
+            )
+            db.session.add(new_login)
+            db.session.commit()
+
+            session['user_id'] = user.id  # This should refer to user.id, not new_login.id
+            response = make_response(jsonify(new_login.to_dict()), 201)
+        except ValueError as e:
+            db.session.rollback()
+            abort(422, description=str(e))
+        except IntegrityError:
+            db.session.rollback()
+            abort(409, description="Database integrity error")
+
+        return response
+
+api.add_resource(Logins, '/logins')
+
+class AuthorizedSession(Resource):
+    def get(self):
+        try:
+            user = User.query.filter_by(id=session.get('user_id')).first()
+            if user:
+                response = make_response(user.to_dict(), 200)
+                return response
+            else:
+                abort(401, description="Unauthorized")
+        except Exception as e:
+            print(f"Error occurred: {e}")
+            abort(500, description="Internal Server Error")
+api.add_resource(AuthorizedSession, '/authorized')
+
+
+class Logout(Resource):
+    def delete(self):
+        if 'user_id' in session:
+            session.pop('user_id')
+            print("User session cleared")
+        else:
+            print("No user session found")
+        response = make_response('', 204)
+        return response
+
+api.add_resource(Logout, '/logout')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

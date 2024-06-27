@@ -1,38 +1,37 @@
-import React, { createContext, useEffect, useState } from "react";
+// context/user.js
 
-// Creating context object
+import React, { createContext, useState, useEffect } from 'react';
+
 const UserContext = createContext();
 
-// Context provider component
-function UserProvider({ children }) {
-  const [user, setUser] = useState(null); // Initialized with default properties
-
-  const fetchUserData = () => {
-    fetch(`http://127.0.0.1:5555/login`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log('Fetched user:', data);
-        setUser(data);
-      })
-      .catch((error) => {
-        console.error('Error fetching user:', error);
-      });
-  };
+const UserProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    fetchUserData();
-  }, []); // Empty dependency array ensures the effect runs only once
+    // Fetch user session on initial load
+    const fetchUser = async () => {
+      try {
+        const response = await fetch('/authorized');
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData);
+        } else {
+          setUser(null); // Not authorized or session expired
+        }
+      } catch (error) {
+        console.error("Failed to fetch user session:", error);
+        setUser(null);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
       {children}
     </UserContext.Provider>
   );
-}
+};
 
-export { UserContext, UserProvider };
+export { UserProvider, UserContext };

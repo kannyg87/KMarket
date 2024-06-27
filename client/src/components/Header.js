@@ -1,9 +1,30 @@
 import React, { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/user";
 
 const Header = () => {
-  const { user, logout } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    fetch('http://localhost:5555/logout', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(res => {
+        if (res.ok) {
+          setUser(null);
+          navigate('/');
+        } else {
+          return res.json().then(error => {
+            console.error("Logout failed", error);
+          });
+        }
+      })
+      .catch(err => console.error("Logout failed", err));
+  };
 
   return (
     <header className="header">
@@ -22,6 +43,9 @@ const Header = () => {
           <NavLink to="https://6660ff4786958d10a5b9af08--stirring-panda-8201e8.netlify.app/" target="_blank" className="nav-link">
             About
           </NavLink>
+          <button onClick={handleLogout} className="nav-link button-link">
+            Logout
+          </button>
         </nav>
       </div>
     </header>

@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 function RegistrationForm() {
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
-  
+
   const initialValues = {
     name: '',
     email: '',
@@ -18,9 +18,7 @@ function RegistrationForm() {
 
   const validationSchema = Yup.object({
     name: Yup.string().required('Required'),
-    email: Yup.string()
-      .email('Invalid email format')
-      .required('Required'),
+    email: Yup.string().email('Invalid email format').required('Required'),
     password: Yup.string().required('Required'),
   });
 
@@ -41,7 +39,12 @@ function RegistrationForm() {
       },
       body: JSON.stringify(userPayload)
     })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(error => { throw error });
+        }
+        return res.json();
+      })
       .then(user => {
         setUser(user);
         navigate('/home');
@@ -61,33 +64,11 @@ function RegistrationForm() {
     >
       {formik => (
         <Form className="registration-form">
-          <FormikControl
-            control='input'
-            type='text'
-            label='Name'
-            name='name'
-          />
-          <FormikControl
-            control='input'
-            type='email'
-            label='Email'
-            name='email'
-          />
-          <FormikControl
-            control='input'
-            type='password'
-            label='Password'
-            name='password'
-          />
-          <FormikControl
-            control='input'
-            type='text'
-            label='Phone number'
-            name='phone'
-          />
-          <button type='submit' disabled={!formik.isValid}>
-            Submit
-          </button>
+          <FormikControl control='input' type='text' label='Name' name='name' />
+          <FormikControl control='input' type='email' label='Email' name='email' />
+          <FormikControl control='input' type='password' label='Password' name='password' />
+          <FormikControl control='input' type='text' label='Phone number' name='phone' />
+          <button type='submit' disabled={!formik.isValid}>Submit</button>
         </Form>
       )}
     </Formik>

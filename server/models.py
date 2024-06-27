@@ -1,6 +1,6 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
-from sqlalchemy.orm import validates
+from sqlalchemy.orm import validates, relationship
 from config import db, bcrypt
 
 class User(db.Model, SerializerMixin):
@@ -12,6 +12,8 @@ class User(db.Model, SerializerMixin):
     _password = db.Column(db.String, nullable=False)
     phone_number = db.Column(db.String, nullable=True)
     admin = db.Column(db.Boolean, default=False)
+
+    logins = relationship('Login', backref='user', lazy=True)
 
     @hybrid_property
     def password(self):
@@ -33,7 +35,7 @@ class User(db.Model, SerializerMixin):
             'phone_number': self.phone_number,
             'admin': self.admin
         }
-    
+
     @validates('email')
     def validates_email(self, key, email_input):
         if '@' not in email_input:
@@ -42,7 +44,29 @@ class User(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'<User {self.name} {self.email} {self.phone_number}>'
+    
+class Login(db.Model, SerializerMixin):
+    __tablename__ = 'logins'
 
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String, unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'email': self.email,
+            'user_id': self.user_id
+        }
+
+    @validates('email')
+    def validates_email(self, key, email_input):
+        if '@' not in email_input:
+            raise ValueError("wrong email format")
+        return email_input
+
+    def __repr__(self):
+        return f'<Login {self.email}>'
 class Admin(db.Model, SerializerMixin):
     __tablename__ = 'admins'
 

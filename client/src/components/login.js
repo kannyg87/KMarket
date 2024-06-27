@@ -1,3 +1,4 @@
+// pages/Login.js
 import React, { useContext, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form } from 'formik';
@@ -13,19 +14,14 @@ function Login() {
 
   const initialValues = {
     email: '',
-    password: '',
   };
 
   const validationSchema = Yup.object({
-    email: Yup.string()
-      .email('Invalid email format')
-      .required('Required'),
-    password: Yup.string().required('Required'),
+    email: Yup.string().email('Invalid email format').required('Required'),
   });
 
   const onSubmit = (values, onSubmitProps) => {
-    const url = signUp ? '/users' : '/login';
-    fetch(url, {
+    fetch('http://localhost:5555/logins', {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -62,21 +58,8 @@ function Login() {
         >
           {formik => (
             <Form className="registration-form">
-              <FormikControl
-                control='input'
-                type='email'
-                label='Email'
-                name='email'
-              />
-              <FormikControl
-                control='input'
-                type='password'
-                label='Password'
-                name='password'
-              />
-              <button type='submit' disabled={!formik.isValid}>
-                Log In
-              </button>
+              <FormikControl control='input' type='email' label='Email' name='email' />
+              <button type='submit' disabled={!formik.isValid}>Log In</button>
             </Form>
           )}
         </Formik>
