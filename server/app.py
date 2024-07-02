@@ -36,6 +36,7 @@ class Users(Resource):
                 email=form_json['email'],
                 user_id=new_user.id
             )
+            new_login.password = form_json['password']
             db.session.add(new_login)
             db.session.commit()
 
@@ -66,15 +67,11 @@ class Logins(Resource):
             if not user:
                 abort(404, description="User not found")
 
-            new_login = Login(
-                email=form_json['email'],
-                user_id=user.id
-            )
-            db.session.add(new_login)
-            db.session.commit()
+            if not user.authenticate(form_json['password']):
+                abort(401, description="Invalid password")
 
-            session['user_id'] = user.id  # This should refer to user.id, not new_login.id
-            response = make_response(jsonify(new_login.to_dict()), 201)
+            session['user_id'] = user.id
+            response = make_response(jsonify(user.to_dict()), 200)
         except ValueError as e:
             db.session.rollback()
             abort(422, description=str(e))
@@ -98,8 +95,8 @@ class AuthorizedSession(Resource):
         except Exception as e:
             print(f"Error occurred: {e}")
             abort(500, description="Internal Server Error")
-api.add_resource(AuthorizedSession, '/authorized')
 
+api.add_resource(AuthorizedSession, '/authorized')
 
 class Logout(Resource):
     def delete(self):

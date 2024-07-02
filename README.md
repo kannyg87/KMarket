@@ -147,3 +147,14 @@ pip install flask-bcrypt
 
 # Session
 hold user info for us, allow some information between requests, no need to make query every time 
+
+# secret Key 
+to get the secret ket just run in the terminal 
+```sh
+$ python -c 'import os; print(os.urandom(16))'
+```
+then in the config file 
+```sh
+app.secret_key = b'Z\x9e&T\x87\xe5\xc1Q6|\xdaJ\xc7I\x87\xe6'
+```
+

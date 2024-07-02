@@ -39,7 +39,7 @@ class User(db.Model, SerializerMixin):
     @validates('email')
     def validates_email(self, key, email_input):
         if '@' not in email_input:
-            raise ValueError("wrong email format")
+            raise ValueError("Invalid email format")
         return email_input
 
     def __repr__(self):
@@ -50,7 +50,20 @@ class Login(db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)
+    _password = db.Column(db.String, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    @hybrid_property
+    def password(self):
+        return self._password
+
+    @password.setter
+    def password(self, password):
+        password_hash = bcrypt.generate_password_hash(password.encode('utf-8'))
+        self._password = password_hash.decode('utf-8')
+
+    def authenticate(self, password):
+        return bcrypt.check_password_hash(self._password, password.encode('utf-8'))
 
     def to_dict(self):
         return {
@@ -62,11 +75,12 @@ class Login(db.Model, SerializerMixin):
     @validates('email')
     def validates_email(self, key, email_input):
         if '@' not in email_input:
-            raise ValueError("wrong email format")
+            raise ValueError("Invalid email format")
         return email_input
 
     def __repr__(self):
         return f'<Login {self.email}>'
+
 class Admin(db.Model, SerializerMixin):
     __tablename__ = 'admins'
 
