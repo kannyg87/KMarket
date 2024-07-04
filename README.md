@@ -99,6 +99,13 @@ And for delete the db
 ```sh
 rm -rf migrations
 ```
+
+For adding new model we following to perform a migration:
+```sh
+flask db migrate -m 'add review'
+flask db upgrade head
+```
+
 ## Implement validations and error handling
 we can add to the column when we first create a column ``` nullable=False``` that is mean it can not be no value 
 ```sh
@@ -124,6 +131,28 @@ it is WSGi library It includes a number of features that will come in handy as w
 - A development server.
 - A testing framework that does not require a running server.
 
+
+#Serializer
+we import Serializer from SerializerMixin
+```sh
+from sqlalchemy_serializer import SerializerMixin
+```
+
+By using SQLAlchemy-Serializer, programmers can create faster and more efficient programs that can easily share data with others, we can include and not include some key, value pair from json file and also using .to_dict() to make it easier to loop on the data in the table as en example:
+in model.py
+```sh
+class Goods(db.Model, SerializerMixin):
+    __tablename__ = 'goods'
+``` 
+
+in the app.py 
+```sh
+class Goodss(Resource):
+    def get(self):
+        goods = Goods.query.all()
+        goods_list = [good.to_dict() for good in goods]
+        return make_response(jsonify(goods_list), 200)
+```
 
 # Seeding the database
 Here is an example of how to add a user to the database:

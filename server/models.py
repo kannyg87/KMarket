@@ -81,6 +81,28 @@ class Login(db.Model, SerializerMixin):
     def __repr__(self):
         return f'<Login {self.email}>'
 
+
+
+class Goods(db.Model, SerializerMixin):
+    __tablename__ = 'goods'
+
+    id = db.Column(db.Integer, primary_key=True)
+    img = db.Column(db.String(255), nullable=False)
+    price = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String(255), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'img': self.img,
+            'price': self.price,
+            'description': self.description,
+            'user_id': self.user_id
+        }
+
+    def __repr__(self):
+        return f'<Goods {self.img}>'
 class Admin(db.Model, SerializerMixin):
     __tablename__ = 'admins'
 

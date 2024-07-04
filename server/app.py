@@ -1,7 +1,7 @@
 from flask import Flask, abort, request, current_app, jsonify, make_response, session
 from flask_restful import Api, Resource
 from config import app, db, api
-from models import Login, User, Admin
+from models import Login, User, Admin, Goods
 from flask_cors import CORS
 from sqlalchemy.exc import IntegrityError
 
@@ -83,6 +83,30 @@ class Logins(Resource):
 
 api.add_resource(Logins, '/logins')
 
+from flask import request, jsonify, make_response
+from flask_restful import Resource
+from models import db, Goods
+
+class Goodss(Resource):
+    def get(self):
+        goods = Goods.query.all()
+        goods_list = [good.to_dict() for good in goods]
+        return make_response(jsonify(goods_list), 200)
+    
+    def post(self):
+        form_json = request.get_json()
+        new_goods = Goods(
+            img=form_json['img'],
+            price=form_json['price'], 
+            description=form_json['description'], 
+            user_id=form_json['user_id']
+        )
+        db.session.add(new_goods)
+        db.session.commit()
+        response = make_response(jsonify(new_goods.to_dict()), 201)
+        return response
+
+api.add_resource(Goodss, '/goods')
 class AuthorizedSession(Resource):
     def get(self):
         try:
