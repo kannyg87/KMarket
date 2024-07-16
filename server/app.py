@@ -82,11 +82,6 @@ class Logins(Resource):
         return response
 
 api.add_resource(Logins, '/logins')
-
-from flask import request, jsonify, make_response
-from flask_restful import Resource
-from models import db, Goods
-
 class Goodss(Resource):
     def get(self):
         goods = Goods.query.all()
@@ -107,6 +102,15 @@ class Goodss(Resource):
         return response
 
 api.add_resource(Goodss, '/goods')
+
+class GoodssByID(Resource):
+    def get(self, id):
+        goods = Goods.query.filter(Goods.id == id).first().to_dict()
+        return make_response(jsonify(goods), 200)
+
+    
+api.add_resource(GoodssByID, '/goods/<int:id>')
+
 class AuthorizedSession(Resource):
     def get(self):
         try:

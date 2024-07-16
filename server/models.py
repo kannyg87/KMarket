@@ -81,8 +81,6 @@ class Login(db.Model, SerializerMixin):
     def __repr__(self):
         return f'<Login {self.email}>'
 
-
-
 class Goods(db.Model, SerializerMixin):
     __tablename__ = 'goods'
 
@@ -91,7 +89,8 @@ class Goods(db.Model, SerializerMixin):
     price = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(255), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-
+    serialize_rules = ('-img',)
+    
     def to_dict(self):
         return {
             'id': self.id,
@@ -100,9 +99,10 @@ class Goods(db.Model, SerializerMixin):
             'description': self.description,
             'user_id': self.user_id
         }
-
+    
     def __repr__(self):
         return f'<Goods {self.img}>'
+
 class Admin(db.Model, SerializerMixin):
     __tablename__ = 'admins'
 
