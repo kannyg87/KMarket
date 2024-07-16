@@ -167,6 +167,33 @@ then run
 python seed.py
 ```
 
+# One-To-Many Relationships
+A single User can have multiple Login entries. This is indicated by the logins attribute in the User class, which is a list of Login objects associated with the user.
+
+```sh
+class User(db.Model, SerializerMixin):
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    email = db.Column(db.String, unique=True, nullable=False)
+    _password = db.Column(db.String, nullable=False)
+    phone_number = db.Column(db.String, nullable=True)
+    admin = db.Column(db.Boolean, default=False)
+
+    logins = relationship('Login', backref='user', lazy=True)
+
+```
+
+```sh
+class Login(db.Model, SerializerMixin):
+    __tablename__ = 'logins'
+
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String, unique=True, nullable=False)
+    _password = db.Column(db.String, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+```
 
 # password: 
 import bcrypt in the config and invoke it, and we need to run 

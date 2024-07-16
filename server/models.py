@@ -1,7 +1,17 @@
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates, relationship
-from config import db, bcrypt
+from config import db, bcrypt, app
+from flask_cors import CORS
+CORS(app)
+
+
+# Association table for the many-to-many relationship
+user_goods = db.Table('user_goods',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+    db.Column('goods_id', db.Integer, db.ForeignKey('goods.id'), primary_key=True)
+)
+
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
@@ -14,6 +24,7 @@ class User(db.Model, SerializerMixin):
     admin = db.Column(db.Boolean, default=False)
 
     logins = relationship('Login', backref='user', lazy=True)
+    goods = relationship('Goods', secondary=user_goods, back_populates='users')
 
     @hybrid_property
     def password(self):
@@ -44,7 +55,7 @@ class User(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'<User {self.name} {self.email} {self.phone_number}>'
-    
+
 class Login(db.Model, SerializerMixin):
     __tablename__ = 'logins'
 
@@ -88,21 +99,20 @@ class Goods(db.Model, SerializerMixin):
     img = db.Column(db.String(255), nullable=False)
     price = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(255), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     serialize_rules = ('-img',)
-    
+
+    users = relationship('User', secondary=user_goods, back_populates='goods', lazy='dynamic')
+
     def to_dict(self):
         return {
             'id': self.id,
             'img': self.img,
             'price': self.price,
-            'description': self.description,
-            'user_id': self.user_id
+            'description': self.description
         }
-    
+
     def __repr__(self):
         return f'<Goods {self.img}>'
-
 class Admin(db.Model, SerializerMixin):
     __tablename__ = 'admins'
 

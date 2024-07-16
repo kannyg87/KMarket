@@ -25,8 +25,8 @@ class Users(Resource):
             new_user = User(
                 name=form_json['name'],
                 email=form_json['email'], 
-                phone_number=form_json['phone_number'],
-                admin=form_json['admin']
+                phone_number=form_json.get('phone_number'),
+                admin=form_json.get('admin', False)
             )
             new_user.password = form_json['password']
             db.session.add(new_user)
@@ -78,37 +78,58 @@ class Logins(Resource):
         except IntegrityError:
             db.session.rollback()
             abort(409, description="Database integrity error")
+        except Exception as e:
+            db.session.rollback()
+            print(f"Unexpected Error: {e}")  # Log the error
+            abort(500, description="Internal Server Error")
 
         return response
 
 api.add_resource(Logins, '/logins')
+
 class Goodss(Resource):
     def get(self):
-        goods = Goods.query.all()
-        goods_list = [good.to_dict() for good in goods]
-        return make_response(jsonify(goods_list), 200)
-    
+        try:
+            goods = Goods.query.all()
+            goods_list = [good.to_dict() for good in goods]
+            return make_response(jsonify(goods_list), 200)
+        except Exception as e:
+            print(f"Unexpected Error: {e}")  # Log the error
+            abort(500, description="Internal Server Error")
+
     def post(self):
         form_json = request.get_json()
-        new_goods = Goods(
-            img=form_json['img'],
-            price=form_json['price'], 
-            description=form_json['description'], 
-            user_id=form_json['user_id']
-        )
-        db.session.add(new_goods)
-        db.session.commit()
-        response = make_response(jsonify(new_goods.to_dict()), 201)
+        print(f"Received goods data: {form_json}")  # Add logging for received data
+        try:
+            new_goods = Goods(
+                img=form_json['img'],
+                price=form_json['price'],
+                description=form_json['description']
+            )
+            db.session.add(new_goods)
+            db.session.commit()
+            response = make_response(jsonify(new_goods.to_dict()), 201)
+        except Exception as e:
+            db.session.rollback()
+            print(f"Unexpected Error: {e}")  # Log the error
+            abort(500, description="Internal Server Error")
+
         return response
 
 api.add_resource(Goodss, '/goods')
 
 class GoodssByID(Resource):
     def get(self, id):
-        goods = Goods.query.filter(Goods.id == id).first().to_dict()
-        return make_response(jsonify(goods), 200)
+        try:
+            goods = Goods.query.filter(Goods.id == id).first()
+            if goods:
+                return make_response(jsonify(goods.to_dict()), 200)
+            else:
+                abort(404, description="Goods not found")
+        except Exception as e:
+            print(f"Unexpected Error: {e}")  # Log the error
+            abort(500, description="Internal Server Error")
 
-    
 api.add_resource(GoodssByID, '/goods/<int:id>')
 
 class AuthorizedSession(Resource):
