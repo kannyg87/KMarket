@@ -45,9 +45,9 @@ function Login() {
   const handleClick = () => setSignUp(prevSignUp => !prevSignUp);
 
   return (
-    <div>
-      <h2>{signUp ? "Sign Up" : "Log In"}</h2>
-      <button onClick={handleClick}>
+    <div style={styles.container}>
+      <h2 style={styles.title}>{signUp ? "Sign Up" : "Log In"}</h2>
+      <button onClick={handleClick} style={styles.toggleButton}>
         {signUp ? "Already have an account? Log In" : "Don't have an account? Sign Up"}
       </button>
       {signUp ? (
@@ -59,10 +59,16 @@ function Login() {
           onSubmit={onSubmit}
         >
           {formik => (
-            <Form className="registration-form">
-              <FormikControl control='input' type='email' label='Email' name='email' />
-              <FormikControl control='input' type='password' label='Password' name='password' />
-              <button type='submit' disabled={!formik.isValid}>Log In</button>
+            <Form style={styles.form}>
+              <div style={styles.inputContainer}>
+                <FormikControl control='input' type='email' label='Email' name='email' style={styles.input} />
+              </div>
+              <div style={styles.inputContainer}>
+                <FormikControl control='input' type='password' label='Password' name='password' style={styles.input} />
+              </div>
+              <button type='submit' disabled={!formik.isValid} style={styles.submitButton}>
+                Log In
+              </button>
             </Form>
           )}
         </Formik>
@@ -70,5 +76,53 @@ function Login() {
     </div>
   );
 }
+
+const styles = {
+  container: {
+    backgroundColor: '#f0f4f8',
+    padding: '40px',
+    borderRadius: '10px',
+    width: '500px',
+    margin: '0 auto',
+    marginTop: '100px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    textAlign: 'center'
+  },
+  title: {
+    marginBottom: '20px',
+    color: '#333'
+  },
+  toggleButton: {
+    backgroundColor: '#007bff',
+    color: '#fff',
+    border: 'none',
+    padding: '10px 20px',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    marginBottom: '20px'
+  },
+  form: {
+    textAlign: 'left'
+  },
+  inputContainer: {
+    marginBottom: '15px'
+  },
+  input: {
+    width: '100%',
+    padding: '10px',
+    borderRadius: '5px',
+    border: '1px solid #ccc'
+  },
+  submitButton: {
+    width: '100%',
+    padding: '10px',
+    backgroundColor: '#28a745',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontSize: '16px'
+  }
+};
 
 export default Login;

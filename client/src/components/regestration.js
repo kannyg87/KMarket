@@ -57,22 +57,74 @@ function RegistrationForm() {
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={onSubmit}
-    >
-      {formik => (
-        <Form className="registration-form">
-          <FormikControl control='input' type='text' label='Name' name='name' />
-          <FormikControl control='input' type='email' label='Email' name='email' />
-          <FormikControl control='input' type='password' label='Password' name='password' />
-          <FormikControl control='input' type='text' label='Phone number' name='phone' />
-          <button type='submit' disabled={!formik.isValid}>Submit</button>
-        </Form>
-      )}
-    </Formik>
+    <div style={styles.container}>
+      <h2 style={styles.title}>Sign Up</h2>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+      >
+        {formik => (
+          <Form style={styles.form}>
+            <div style={styles.inputContainer}>
+              <FormikControl control='input' type='text' label='Name' name='name' style={styles.input} />
+            </div>
+            <div style={styles.inputContainer}>
+              <FormikControl control='input' type='email' label='Email' name='email' style={styles.input} />
+            </div>
+            <div style={styles.inputContainer}>
+              <FormikControl control='input' type='password' label='Password' name='password' style={styles.input} />
+            </div>
+            <div style={styles.inputContainer}>
+              <FormikControl control='input' type='text' label='Phone number' name='phone' style={styles.input} />
+            </div>
+            <button type='submit' disabled={!formik.isValid} style={styles.submitButton}>
+              Submit
+            </button>
+          </Form>
+        )}
+      </Formik>
+    </div>
   );
 }
+
+const styles = {
+  container: {
+    backgroundColor: '#e3f2fd',
+    padding: '40px',
+    borderRadius: '10px',
+    width: '400px',
+    margin: '0 auto',
+    marginTop: '50px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    textAlign: 'center'
+  },
+  title: {
+    marginBottom: '20px',
+    color: '#333'
+  },
+  form: {
+    textAlign: 'left'
+  },
+  inputContainer: {
+    marginBottom: '15px'
+  },
+  input: {
+    width: '100%',
+    padding: '10px',
+    borderRadius: '5px',
+    border: '1px solid #ccc'
+  },
+  submitButton: {
+    width: '100%',
+    padding: '10px',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    fontSize: '16px'
+  }
+};
 
 export default RegistrationForm;
