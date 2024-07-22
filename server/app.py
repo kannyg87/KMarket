@@ -132,6 +132,30 @@ class GoodssByID(Resource):
 
 api.add_resource(GoodssByID, '/goods/<int:id>')
 
+class UserGoods(Resource):
+    def post(self, user_id):
+        form_json = request.get_json()
+        try:
+            good_id = form_json['good_id']
+            user = User.query.get(user_id)
+            good = Goods.query.get(good_id)
+            if user and good:
+                user.goods.append(good)
+                db.session.commit()
+                return make_response(jsonify({"message": "Good added to user successfully."}), 200)
+            else:
+                abort(404, description="User or Good not found")
+        except IntegrityError:
+            db.session.rollback()
+            abort(409, description="Database integrity error")
+        except Exception as e:
+            db.session.rollback()
+            print(f"Unexpected Error: {e}")
+            abort(500, description="Internal Server Error")
+
+api.add_resource(UserGoods, '/users/<int:user_id>/goods')
+
+
 class AuthorizedSession(Resource):
     def get(self):
         try:

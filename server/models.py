@@ -5,14 +5,11 @@ from config import db, bcrypt, app
 from flask_cors import CORS
 CORS(app)
 
-
 # Association table for the many-to-many relationship
 user_goods = db.Table('user_goods',
     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
     db.Column('goods_id', db.Integer, db.ForeignKey('goods.id'), primary_key=True)
 )
-
-
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
@@ -44,7 +41,8 @@ class User(db.Model, SerializerMixin):
             'name': self.name,
             'email': self.email,
             'phone_number': self.phone_number,
-            'admin': self.admin
+            'admin': self.admin,
+            'goods': [good.to_dict() for good in self.goods]  # Include goods in to_dict
         }
 
     @validates('email')
@@ -85,7 +83,7 @@ class Login(db.Model, SerializerMixin):
 
     @validates('email')
     def validates_email(self, key, email_input):
-        if '@' not in email_input:
+        if ('@' not in email_input):
             raise ValueError("Invalid email format")
         return email_input
 
@@ -99,7 +97,7 @@ class Goods(db.Model, SerializerMixin):
     img = db.Column(db.String(255), nullable=False)
     price = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(255), nullable=False)
-    serialize_rules = ('-img',)
+    # serialize_rules = ('-img',)
 
     users = relationship('User', secondary=user_goods, back_populates='goods', lazy='dynamic')
 
@@ -113,6 +111,7 @@ class Goods(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'<Goods {self.img}>'
+
 class Admin(db.Model, SerializerMixin):
     __tablename__ = 'admins'
 
