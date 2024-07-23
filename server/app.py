@@ -133,6 +133,13 @@ class GoodssByID(Resource):
 api.add_resource(GoodssByID, '/goods/<int:id>')
 
 class UserGoods(Resource):
+    def get(self, user_id):
+        user = User.query.get(user_id)
+        if not user:
+            abort(404, description="User not found")
+        user_goods = user.goods
+        return [good.to_dict() for good in user_goods]
+
     def post(self, user_id):
         form_json = request.get_json()
         try:

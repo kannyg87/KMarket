@@ -27,9 +27,9 @@ function UserProfile() {
   return (
     <main>
       <Header />
-      <h1>This is user profile component</h1>
-      <h1>user name is: {user.name}</h1>
-      <h1>user email is: {user.email}</h1>
+      <h1>This is the user profile component</h1>
+      <h1>User name: {user.name}</h1>
+      <h1>User email: {user.email}</h1>
       <div style={styles.container}>
         {userGoods.map((item) => (
           <div key={item.id} style={styles.card}>
