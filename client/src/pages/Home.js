@@ -45,7 +45,7 @@ function Home() {
         }
       }
       setSelectedGoods([]);
-      navigate('/profile'); // Redirect to user profile
+      navigate('/profile');
     } catch (error) {
       console.error('Error:', error);
       alert(`Error: ${error.message}`);

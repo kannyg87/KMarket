@@ -21,7 +21,6 @@ function AppContent() {
 
   return (
     <>
-      <h1>Project Client</h1>
       <Outlet />
     </>
   );

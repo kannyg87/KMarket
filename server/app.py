@@ -80,7 +80,7 @@ class Logins(Resource):
             abort(409, description="Database integrity error")
         except Exception as e:
             db.session.rollback()
-            print(f"Unexpected Error: {e}")  # Log the error
+            print(f"Unexpected Error: {e}")
             abort(500, description="Internal Server Error")
 
         return response
@@ -94,12 +94,12 @@ class Goodss(Resource):
             goods_list = [good.to_dict() for good in goods]
             return make_response(jsonify(goods_list), 200)
         except Exception as e:
-            print(f"Unexpected Error: {e}")  # Log the error
+            print(f"Unexpected Error: {e}")
             abort(500, description="Internal Server Error")
 
     def post(self):
         form_json = request.get_json()
-        print(f"Received goods data: {form_json}")  # Add logging for received data
+        print(f"Received goods data: {form_json}")
         try:
             new_goods = Goods(
                 img=form_json['img'],
@@ -111,7 +111,7 @@ class Goodss(Resource):
             response = make_response(jsonify(new_goods.to_dict()), 201)
         except Exception as e:
             db.session.rollback()
-            print(f"Unexpected Error: {e}")  # Log the error
+            print(f"Unexpected Error: {e}")
             abort(500, description="Internal Server Error")
 
         return response
@@ -127,7 +127,7 @@ class GoodssByID(Resource):
             else:
                 abort(404, description="Goods not found")
         except Exception as e:
-            print(f"Unexpected Error: {e}")  # Log the error
+            print(f"Unexpected Error: {e}")
             abort(500, description="Internal Server Error")
 
 api.add_resource(GoodssByID, '/goods/<int:id>')
@@ -163,7 +163,25 @@ class UserGoods(Resource):
             print(f"Unexpected Error: {e}")
             abort(500, description="Internal Server Error")
 
-api.add_resource(UserGoods, '/users/<int:user_id>/goods')
+    def delete(self, user_id, good_id):
+        try:
+            user = User.query.get(user_id)
+            good = Goods.query.get(good_id)
+            if user and good and good in user.goods:
+                user.goods.remove(good)
+                db.session.commit()
+                return make_response(jsonify({"message": "Good removed from user successfully."}), 200)
+            else:
+                abort(404, description="User or Good not found")
+        except IntegrityError:
+            db.session.rollback()
+            abort(409, description="Database integrity error")
+        except Exception as e:
+            db.session.rollback()
+            print(f"Unexpected Error: {e}")
+            abort(500, description="Internal Server Error")
+
+api.add_resource(UserGoods, '/users/<int:user_id>/goods', '/users/<int:user_id>/goods/<int:good_id>')
 
 class AuthorizedSession(Resource):
     def get(self):
