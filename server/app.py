@@ -140,9 +140,12 @@ class UserGoods(Resource):
             user = User.query.get(user_id)
             good = Goods.query.get(good_id)
             if user and good:
-                user.goods.append(good)
-                db.session.commit()
-                return make_response(jsonify({"message": "Good added to user successfully."}), 200)
+                if good in user.goods:
+                    return make_response(jsonify({"message": "Good already added to user."}), 409)
+                else:
+                    user.goods.append(good)
+                    db.session.commit()
+                    return make_response(jsonify({"message": "Good added to user successfully."}), 200)
             else:
                 abort(404, description="User or Good not found")
         except IntegrityError:
@@ -154,7 +157,6 @@ class UserGoods(Resource):
             abort(500, description="Internal Server Error")
 
 api.add_resource(UserGoods, '/users/<int:user_id>/goods')
-
 
 class AuthorizedSession(Resource):
     def get(self):

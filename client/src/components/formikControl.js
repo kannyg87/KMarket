@@ -1,7 +1,7 @@
 import React from "react";
 import Input from "./input";
-
 import Radio from "./radio";
+import Checkbox from "./checkbox";
 
 const FormikControl = (props) => {
   // rest is type, label, name
@@ -12,6 +12,8 @@ const FormikControl = (props) => {
 
     case "radio":
       return <Radio {...rest} />;
+    case "checkbox":
+      return <Checkbox {...rest} />;
 
     default:
       return null;

@@ -1,40 +1,54 @@
-import React, { useEffect, useState } from 'react';
-import Header from "../components/Header";
+import React, { useEffect, useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Header from '../components/Header';
+import { UserContext } from '../context/user';
 
 function Home() {
   const [data, setData] = useState([]);
-  const [userId, setUserId] = useState(null); 
+  const [selectedGoods, setSelectedGoods] = useState([]);
+  const { user } = useContext(UserContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("http://localhost:5555/goods")
       .then(resp => resp.json())
-      .then(data => setData(data));
-
-    const storedUserId = sessionStorage.getItem('user_id');
-    if (storedUserId) {
-      setUserId(storedUserId);
-    }
+      .then(data => setData(data))
+      .catch(error => console.error('Error fetching goods:', error));
   }, []);
 
-  const handleSelectGood = async (goodId) => {
-    if (!userId) {
+  const handleSelectGood = (goodId) => {
+    setSelectedGoods(prevSelectedGoods =>
+      prevSelectedGoods.includes(goodId)
+        ? prevSelectedGoods.filter(id => id !== goodId)
+        : [...prevSelectedGoods, goodId]
+    );
+  };
+
+  const handleSubmit = async () => {
+    if (!user || !user.id) {
       alert('User not logged in');
       return;
     }
     try {
-      const response = await fetch(`http://localhost:5555/users/${userId}/goods`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ good_id: goodId })
-      });
-      if (!response.ok) {
-        throw new Error('Failed to add good to user');
+      for (let goodId of selectedGoods) {
+        const response = await fetch(`http://localhost:5555/users/${user.id}/goods`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ good_id: goodId })
+        });
+        if (response.status === 409) {
+          console.log(`Good ID ${goodId} already added to user`);
+        } else if (!response.ok) {
+          throw new Error('Failed to add good to user');
+        }
       }
-      alert('Good added to your list');
+      setSelectedGoods([]);
+      navigate('/profile'); // Redirect to user profile
     } catch (error) {
       console.error('Error:', error);
+      alert(`Error: ${error.message}`);
     }
   };
 
@@ -48,10 +62,15 @@ function Home() {
             <img src={item.img} alt={item.description} style={styles.image} />
             <p>{item.description}</p>
             <p>${item.price}</p>
-            <button onClick={() => handleSelectGood(item.id)}>Select</button>
+            <input
+              type="checkbox"
+              checked={selectedGoods.includes(item.id)}
+              onChange={() => handleSelectGood(item.id)}
+            />
           </div>
         ))}
       </div>
+      <button style={styles.button} onClick={handleSubmit}>Submit</button>
     </div>
   );
 }
@@ -76,6 +95,16 @@ const styles = {
     height: '150px',
     objectFit: 'cover',
   },
+  button: {
+    marginTop: '20px',
+    padding: '10px 20px',
+    fontSize: '16px',
+    borderRadius: '5px',
+    backgroundColor: '#28a745',
+    color: 'white',
+    border: 'none',
+    cursor: 'pointer',
+  }
 };
 
 export default Home;
