@@ -120,5 +120,13 @@ class Admin(db.Model, SerializerMixin):
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+            'password': self.password
+        }
+
     def __repr__(self):
         return f'<Admin {self.name} {self.email}>'

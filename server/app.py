@@ -183,20 +183,43 @@ class UserGoods(Resource):
 
 api.add_resource(UserGoods, '/users/<int:user_id>/goods', '/users/<int:user_id>/goods/<int:good_id>')
 
-class AuthorizedSession(Resource):
+class Admins(Resource):
     def get(self):
         try:
-            user = User.query.filter_by(id=session.get('user_id')).first()
-            if user:
-                response = make_response(user.to_dict(), 200)
-                return response
-            else:
-                abort(401, description="Unauthorized")
+            admin = Admin.query.all()
+            admin_list = [ad.to_dict() for ad in admin]
+            return make_response(jsonify(admin_list), 200)
         except Exception as e:
-            print(f"Error occurred: {e}")
+            print(f"Unexpected Error: {e}")
             abort(500, description="Internal Server Error")
 
-api.add_resource(AuthorizedSession, '/authorized')
+    def post(self):
+        form_json = request.get_json()
+        print(f"Received admin data: {form_json}")
+        try:
+            admin = Admin.query.filter_by(email=form_json['email']).first()
+            if not admin:
+                abort(404, description="Admin not found")
+
+            if not admin.authenticate(form_json['password']):
+                abort(401, description="Invalid password")
+
+            session['admin_id'] = admin.id
+            response = make_response(jsonify(admin.to_dict()), 200)
+        except ValueError as e:
+            db.session.rollback()
+            abort(422, description=str(e))
+        except IntegrityError:
+            db.session.rollback()
+            abort(409, description="Database integrity error")
+        except Exception as e:
+            db.session.rollback()
+            print(f"Unexpected Error: {e}")
+            abort(500, description="Internal Server Error")
+
+        return response
+
+api.add_resource(Admins, '/admin')
 
 class Logout(Resource):
     def delete(self):
