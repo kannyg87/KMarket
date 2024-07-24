@@ -1,5 +1,3 @@
-// context/user.js
-
 import React, { createContext, useState, useEffect } from 'react';
 
 const UserContext = createContext();
@@ -8,7 +6,6 @@ const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Fetch user session on initial load
     const fetchUser = async () => {
       try {
         const response = await fetch('/authorized');
@@ -16,7 +13,7 @@ const UserProvider = ({ children }) => {
           const userData = await response.json();
           setUser(userData);
         } else {
-          setUser(null); // Not authorized or session expired
+          setUser(null);
         }
       } catch (error) {
         console.error("Failed to fetch user session:", error);
