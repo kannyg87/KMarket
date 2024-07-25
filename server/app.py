@@ -66,7 +66,48 @@ class Users(Resource):
 
         return response
 
-api.add_resource(Users, '/users')
+    def put(self, user_id):
+        form_json = request.get_json()
+        try:
+            user = User.query.get(user_id)
+            if not user:
+                abort(404, description="User not found")
+
+            user.name = form_json.get('name', user.name)
+            user.email = form_json.get('email', user.email)
+            user.phone_number = form_json.get('phone_number', user.phone_number)
+            user.admin = form_json.get('admin', user.admin)
+            if 'password' in form_json:
+                user.password = form_json['password']
+
+            db.session.commit()
+            response = make_response(jsonify(user.to_dict()), 200)
+        except ValueError as e:
+            db.session.rollback()
+            print(f"ValueError: {e}")
+            abort(422, description=str(e))
+        except IntegrityError as e:
+            db.session.rollback()
+            print(f"IntegrityError: {e}")
+            abort(409, description="Database integrity error")
+        except Exception as e:
+            db.session.rollback()
+            print(f"Unexpected Error: {e}")
+            abort(500, description="Internal Server Error")
+
+        return response
+
+    def delete(self, user_id):
+
+        user = User.query.get(user_id)
+        if not user:
+            abort(404, description="User not found")
+
+        db.session.delete(user)
+        db.session.commit()
+        return make_response(jsonify({"message": "User deleted successfully"}), 200)
+
+api.add_resource(Users, '/users', '/users/<int:user_id>')
 
 class Logins(Resource):
     def post(self):

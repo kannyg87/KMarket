@@ -3,6 +3,7 @@ from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import validates, relationship
 from config import db, bcrypt, app
 from flask_cors import CORS
+
 CORS(app)
 
 # Association table for the many-to-many relationship
@@ -10,6 +11,7 @@ user_goods = db.Table('user_goods',
     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
     db.Column('goods_id', db.Integer, db.ForeignKey('goods.id'), primary_key=True)
 )
+
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
@@ -20,7 +22,7 @@ class User(db.Model, SerializerMixin):
     phone_number = db.Column(db.String, nullable=True)
     admin = db.Column(db.Boolean, default=False)
 
-    logins = relationship('Login', backref='user', lazy=True)
+    logins = relationship('Login', backref='user', cascade='all, delete, delete-orphan', lazy=True)
     goods = relationship('Goods', secondary=user_goods, back_populates='users')
 
     @hybrid_property
@@ -60,7 +62,7 @@ class Login(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String, unique=True, nullable=False)
     _password = db.Column(db.String, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
 
     @hybrid_property
     def password(self):
