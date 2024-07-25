@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [editUserId, setEditUserId] = useState(null);
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("http://127.0.0.1:5555/users")
@@ -126,6 +128,7 @@ const AdminUsers = () => {
           ))}
         </tbody>
       </table>
+      <button  style={styles.button} onClick={()=>navigate("/home")}>Back</button>
     </div>
   );
 };
@@ -161,6 +164,9 @@ const styles = {
     border: "1px solid #ddd",
     padding: "8px",
   },
+  button: {
+    marginTop: '20px'
+  }
 };
 
 export default AdminUsers;
