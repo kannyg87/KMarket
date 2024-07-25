@@ -9,9 +9,8 @@ import AdminLoginPrompt from "./adminLoginPrompt";
 
 function Login() {
   const navigate = useNavigate();
-  const { setUser } = useContext(UserContext);
+  const { setUser, isAdmin, setIsAdmin } = useContext(UserContext);
   const [signUp, setSignUp] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   const initialValues = {
     email: "",

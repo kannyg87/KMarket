@@ -15,6 +15,15 @@ def index():
                 <h2>The name of this application is {appname}</h2>'''
 
 class Users(Resource):
+    def get(self):
+        try:
+            users = User.query.all()
+            user_list = [user.to_dict() for user in users]
+            return make_response(jsonify(user_list), 200)
+        except Exception as e:
+            print(f"Unexpected Error: {e}")
+            abort(500, description="Internal Server Error")
+
     def post(self):
         form_json = request.get_json()
         try:
@@ -197,21 +206,21 @@ class Admins(Resource):
         form_json = request.get_json()
         print(f"Received admin data: {form_json}")
         try:
-            admin = Admin.query.filter_by(email=form_json['email']).first()
-            if not admin:
-                abort(404, description="Admin not found")
+            if not form_json:
+                abort(400, description="Invalid data")
 
-            if not admin.authenticate(form_json['password']):
-                abort(401, description="Invalid password")
+            # Check if all required fields are present
+            if 'name' not in form_json or 'email' not in form_json or 'password' not in form_json:
+                abort(400, description="Missing fields")
 
-            session['admin_id'] = admin.id
-            response = make_response(jsonify(admin.to_dict()), 200)
-        except ValueError as e:
-            db.session.rollback()
-            abort(422, description=str(e))
-        except IntegrityError:
-            db.session.rollback()
-            abort(409, description="Database integrity error")
+            new_admin = Admin(
+                name=form_json['name'],
+                email=form_json['email'],
+                password=form_json['password']
+            )
+            db.session.add(new_admin)
+            db.session.commit()
+            response = make_response(jsonify(new_admin.to_dict()), 201)
         except Exception as e:
             db.session.rollback()
             print(f"Unexpected Error: {e}")

@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import FormikControl from "../components/formikControl";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/user";
 
-function AdminLoginPrompt({isAdmin}) {
-  const [admin, setAdmin] = useState([]);
+function AdminLoginPrompt() {
+  const { isAdmin, setAdmin } = useContext(UserContext);
   const navigate = useNavigate();
 
   const initialValues = {
@@ -32,7 +33,7 @@ function AdminLoginPrompt({isAdmin}) {
       .then((res) => res.json())
       .then((user) => {
         setAdmin(user);
-        navigate("/home");
+        navigate("/admin");
       })
       .catch((error) => {
         console.error("Error:", error);

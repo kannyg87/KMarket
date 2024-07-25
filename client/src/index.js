@@ -6,6 +6,7 @@ import ErrorPage from '../src/pages/ErrorPage'
 import UserProfile from '../src/pages/UserProfile'
 import "./index.css";
 import App from "./components/App";
+import AdminUsers from "./pages/AdminUsers";
 
 
 const router = createBrowserRouter([
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: "profile/",
         element: <UserProfile />,
+      },
+      {
+        path: "admin/",
+        element: <AdminUsers />,
       },
     ],
   },
