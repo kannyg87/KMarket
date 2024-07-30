@@ -1,10 +1,9 @@
 import React, { useContext } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/user";
-import AdminUsers from "../pages/AdminUsers";
 
 const Header = () => {
-  const { user, setUser, isAdmin } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -39,9 +38,11 @@ const Header = () => {
             Home
           </NavLink>
 
-          <NavLink to="/admin" className="nav-link">
-            Admin
-          </NavLink>
+          {user?.admin && (
+            <NavLink to="/admin" className="nav-link">
+              Admin
+            </NavLink>
+          )}
 
           <NavLink to="/profile" className="nav-link">
             Profile

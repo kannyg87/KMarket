@@ -1,16 +1,16 @@
 import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import FormikControl from "../components/formikControl";
+import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/user";
 import RegistrationForm from "../components/regestration";
-import AdminLoginPrompt from "./adminLoginPrompt";
 
 function Login() {
   const navigate = useNavigate();
-  const { setUser, isAdmin, setIsAdmin } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
   const [signUp, setSignUp] = useState(false);
+  const [isAdminLogin, setIsAdminLogin] = useState(false);
 
   const initialValues = {
     email: "",
@@ -23,8 +23,8 @@ function Login() {
   });
 
   const onSubmit = (values, onSubmitProps) => {
-
-    fetch("http://localhost:5555/logins", {
+    const url = isAdminLogin ? "http://localhost:5555/admin" : "http://localhost:5555/logins";
+    fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -32,9 +32,9 @@ function Login() {
       body: JSON.stringify(values),
     })
       .then((res) => res.json())
-      .then((user) => {
-        setUser(user);
-        navigate("/home");
+      .then((userData) => {
+        setUser(userData);
+        navigate(isAdminLogin ? "/adminlog" : "/home");
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -45,66 +45,67 @@ function Login() {
 
   const handleClick = () => setSignUp((prevSignUp) => !prevSignUp);
 
+  const toggleAdminLogin = () => {
+    setIsAdminLogin((prev) => !prev);
+    if (!isAdminLogin) {
+      navigate("/admin");
+    }
+  };
+
   return (
     <div style={styles.container}>
-      {isAdmin ? (
-        <AdminLoginPrompt isAdmin={isAdmin} />
+      <label>
+        <input
+          type="checkbox"
+          checked={isAdminLogin}
+          onChange={toggleAdminLogin}
+        />
+        Are you an admin?
+      </label>
+      <h2 style={styles.title}>{signUp ? "Sign Up" : "Log In"}</h2>
+      <button onClick={handleClick} style={styles.toggleButton}>
+        {signUp
+          ? "Already have an account? Log In"
+          : "Don't have an account? Sign Up"}
+      </button>
+      {signUp ? (
+        <RegistrationForm />
       ) : (
-        <div>
-          <label>
-            <input
-              type="checkbox"
-              checked={isAdmin}
-              onChange={(e) => setIsAdmin(e.target.checked)}
-            />
-            Are you an admin?
-          </label>
-          <h2 style={styles.title}>{signUp ? "Sign Up" : "Log In"}</h2>
-          <button onClick={handleClick} style={styles.toggleButton}>
-            {signUp
-              ? "Already have an account? Log In"
-              : "Don't have an account? Sign Up"}
-          </button>
-          {signUp ? (
-            <RegistrationForm />
-          ) : (
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={onSubmit}
-            >
-              {(formik) => (
-                <Form style={styles.form}>
-                  <div style={styles.inputContainer}>
-                    <FormikControl
-                      control="input"
-                      type="email"
-                      label="Email"
-                      name="email"
-                      style={styles.input}
-                    />
-                  </div>
-                  <div style={styles.inputContainer}>
-                    <FormikControl
-                      control="input"
-                      type="password"
-                      label="Password"
-                      name="password"
-                      style={styles.input}
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={!formik.isValid}
-                    style={styles.submitButton}
-                  >
-                    Log In
-                  </button>
-                </Form>
-              )}
-            </Formik>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={onSubmit}
+        >
+          {(formik) => (
+            <Form style={styles.form}>
+              <div style={styles.inputContainer}>
+                <FormikControl
+                  control="input"
+                  type="email"
+                  label="Email"
+                  name="email"
+                  style={styles.input}
+                />
+              </div>
+              <div style={styles.inputContainer}>
+                <FormikControl
+                  control="input"
+                  type="password"
+                  label="Password"
+                  name="password"
+                  style={styles.input}
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={!formik.isValid}
+                style={styles.submitButton}
+              >
+                Log In
+              </button>
+            </Form>
           )}
-        </div>
+        </Formik>
       )}
     </div>
   );
