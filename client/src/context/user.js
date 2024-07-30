@@ -4,7 +4,7 @@ const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [admin, setAdmin] = useState([]);
+  const [admin, setAdmin] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
@@ -25,6 +25,8 @@ const UserProvider = ({ children }) => {
 
     fetchUser();
   }, []);
+  console.log("objectuser", admin)
+  console.log("useruser", user)
 
   return (
     <UserContext.Provider value={{ user, setUser, admin, setAdmin, isAdmin, setIsAdmin}}>

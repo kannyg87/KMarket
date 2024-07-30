@@ -6,6 +6,7 @@ import ErrorPage from '../src/pages/ErrorPage'
 import UserProfile from '../src/pages/UserProfile'
 import "./index.css";
 import App from "./components/App";
+import AdminLoginPrompt from "./pages/AdminUsers";
 import AdminUsers from "./pages/AdminUsers";
 
 
@@ -20,12 +21,16 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "profile/",
+        path: "profile",
         element: <UserProfile />,
       },
       {
-        path: "admin/",
+        path: "adminlog",
         element: <AdminUsers />,
+      },
+      {
+        path: "admin",
+        element: <AdminLoginPrompt />,
       },
     ],
   },

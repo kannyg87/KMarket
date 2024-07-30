@@ -68,6 +68,7 @@ const AdminUsers = () => {
           response.json().then((newUser) => {
             setUsers([...users, newUser]);
             setFormData({ name: "", email: "", password: "" });
+            navigate("/admin");
           });
         }
       });

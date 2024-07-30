@@ -23,7 +23,7 @@ function Login() {
   });
 
   const onSubmit = (values, onSubmitProps) => {
-    console.log("values", values);
+
     fetch("http://localhost:5555/logins", {
       method: "POST",
       headers: {

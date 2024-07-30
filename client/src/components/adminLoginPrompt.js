@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/user";
 
 function AdminLoginPrompt() {
-  const { isAdmin, setAdmin } = useContext(UserContext);
+  const { isAdmin, setAdmin, setIsAdmin } = useContext(UserContext);
   const navigate = useNavigate();
 
   const initialValues = {
@@ -22,7 +22,6 @@ function AdminLoginPrompt() {
   });
 
   const onSubmit = (values, onSubmitProps) => {
-    console.log("values", values);
     fetch("http://127.0.0.1:5555/admin", {
       method: "POST",
       headers: {
@@ -31,14 +30,16 @@ function AdminLoginPrompt() {
       body: JSON.stringify(values),
     })
       .then((res) => res.json())
-      .then((user) => {
-        setAdmin(user);
-        navigate("/admin");
+      .then((admin) => {
+        setAdmin(admin);
+        setIsAdmin(!isAdmin)
+        console.log("adm", admin)
+        navigate("/adminlog");
       })
       .catch((error) => {
         console.error("Error:", error);
       });
-
+  
     onSubmitProps.resetForm();
   };
 

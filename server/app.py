@@ -247,21 +247,20 @@ class Admins(Resource):
         form_json = request.get_json()
         print(f"Received admin data: {form_json}")
         try:
-            if not form_json:
-                abort(400, description="Invalid data")
+            admin = Admin.query.filter_by(email=form_json['email']).first()
+            print(admin)
+            if not admin:
+                abort(404, description="admin not found")
 
-            # Check if all required fields are present
-            if 'name' not in form_json or 'email' not in form_json or 'password' not in form_json:
-                abort(400, description="Missing fields")
+            session['admin_id'] = admin.id
 
-            new_admin = Admin(
-                name=form_json['name'],
-                email=form_json['email'],
-                password=form_json['password']
-            )
-            db.session.add(new_admin)
-            db.session.commit()
-            response = make_response(jsonify(new_admin.to_dict()), 201)
+            response = make_response(jsonify(admin.to_dict()), 200)
+        except ValueError as e:
+            db.session.rollback()
+            abort(422, description=str(e))
+        except IntegrityError:
+            db.session.rollback()
+            abort(409, description="Database integrity error")
         except Exception as e:
             db.session.rollback()
             print(f"Unexpected Error: {e}")
