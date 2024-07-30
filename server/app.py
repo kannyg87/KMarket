@@ -110,6 +110,14 @@ class Users(Resource):
 api.add_resource(Users, '/users', '/users/<int:user_id>')
 
 class Logins(Resource):
+    def get(self):
+        try:
+            user_login = Login.query.all()
+            user_login_list = [us.to_dict() for us in user_login]
+            return make_response(jsonify(user_login_list), 200)
+        except Exception as e:
+            print(f"Unexpected Error: {e}")
+            abort(500, description="Internal Server Error")
     def post(self):
         form_json = request.get_json()
         try:

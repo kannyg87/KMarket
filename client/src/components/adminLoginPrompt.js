@@ -6,17 +6,15 @@ import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/user";
 
 function AdminLoginPrompt() {
-  const { isAdmin, setAdmin, setIsAdmin } = useContext(UserContext);
+  const { setAdmin, setIsAdmin } = useContext(UserContext);
   const navigate = useNavigate();
 
   const initialValues = {
-    name: "",
     email: "",
     password: "",
   };
 
   const validationSchema = Yup.object({
-    name: Yup.string().required("Required"),
     email: Yup.string().email("Invalid email format").required("Required"),
     password: Yup.string().required("Required"),
   });
@@ -30,40 +28,27 @@ function AdminLoginPrompt() {
       body: JSON.stringify(values),
     })
       .then((res) => res.json())
-      .then((admin) => {
-        setAdmin(admin);
-        setIsAdmin(!isAdmin)
-        console.log("adm", admin)
+      .then((adminData) => {
+        setAdmin(adminData);
+        setIsAdmin(true);
         navigate("/adminlog");
       })
       .catch((error) => {
         console.error("Error:", error);
       });
-  
+
     onSubmitProps.resetForm();
   };
-
 
   return (
     <div style={styles.container}>
       <Formik
-        initialValues={{ ...initialValues, isAdmin }}
+        initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
       >
         {(formik) => (
           <Form style={styles.form}>
-            {isAdmin && (
-              <div style={styles.inputContainer}>
-                <FormikControl
-                  control="input"
-                  type="text"
-                  label="Name"
-                  name="name"
-                  style={styles.input}
-                />
-              </div>
-            )}
             <div style={styles.inputContainer}>
               <FormikControl
                 control="input"
@@ -87,7 +72,7 @@ function AdminLoginPrompt() {
               disabled={!formik.isValid}
               style={styles.submitButton}
             >
-              {isAdmin ? "Log In as Admin" : "Log In"}
+              Log In as Admin
             </button>
           </Form>
         )}
@@ -111,7 +96,7 @@ const styles = {
   },
   inputContainer: {
     marginBottom: "15px",
-    marginRight:'10px'
+    marginRight: '10px'
   },
   input: {
     width: "100%",

@@ -13,11 +13,10 @@ function App() {
 }
 
 function AppContent() {
-  const { user, admin } = useContext(UserContext);
-  if (!user || !admin) {
+  const { user } = useContext(UserContext);
+  if (!user ) {
     return <Login />
   }
-  console.log("admin logged", admin)
   return (
     <>
       <Outlet />
