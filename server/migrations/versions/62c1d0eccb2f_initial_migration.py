@@ -1,8 +1,8 @@
 """Initial migration.
 
-Revision ID: 7bf7743e093a
+Revision ID: 62c1d0eccb2f
 Revises: 
-Create Date: 2024-07-24 16:01:10.524599
+Create Date: 2024-08-04 14:34:10.600585
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '7bf7743e093a'
+revision = '62c1d0eccb2f'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -48,13 +48,14 @@ def upgrade():
     sa.Column('email', sa.String(), nullable=False),
     sa.Column('_password', sa.String(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk_logins_user_id_users')),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk_logins_user_id_users'), ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )
     op.create_table('user_goods',
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('goods_id', sa.Integer(), nullable=False),
+    sa.Column('date_added', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['goods_id'], ['goods.id'], name=op.f('fk_user_goods_goods_id_goods')),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], name=op.f('fk_user_goods_user_id_users')),
     sa.PrimaryKeyConstraint('user_id', 'goods_id')
