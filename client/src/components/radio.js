@@ -6,12 +6,12 @@ function Radio(props) {
   const { label, name, options, ...rest } = props;
 
   return (
-    <div className="form-control radio-container">
+    <div className="mb-5 flex flex-col items-start text-left">
       <label>{label}</label>
       <Field name={name}>
         {({ field }) => (
           options.map(option => (
-            <div key={option.key} className="radio-container">
+            <div key={option.key} className="flex flex-col items-start text-left">
               <input
                 type="radio"
                 id={option.value}

@@ -58,66 +58,39 @@ function Home() {
   return (
     <div>
       <Header />
-      <div style={styles.container}>
+      <div className="flex flex-wrap justify-center p-4">
         {data.map((item) => (
-          <div key={item.id} style={styles.card}>
-            <img src={item.img} alt={item.description} style={styles.image} />
-            <p>{item.description}</p>
-            <p>${item.price}</p>
-            <label style={styles.selectLabel}>
+          <div
+            key={item.id}
+            className="bg-white border border-gray-300 rounded-lg p-4 m-2 text-center w-48 shadow-lg"
+          >
+            <img
+              src={item.img}
+              alt={item.description}
+              className="w-full h-36 object-cover mb-2 rounded-md"
+            />
+            <p className="text-lg font-medium">{item.description}</p>
+            <p className="text-gray-700">${item.price}</p>
+            <label className="inline-flex items-center mt-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={selectedGoods.includes(item.id)}
                 onChange={() => handleSelectGood(item.id)}
+                className="form-checkbox"
               />
-              Select
+              <span className="ml-2">Select</span>
             </label>
           </div>
         ))}
       </div>
-      <button style={styles.button} onClick={handleSubmit}>
+      <button
+        className="mt-6 py-2 px-4 text-lg font-semibold text-white bg-green-500 rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+        onClick={handleSubmit}
+      >
         Submit
       </button>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
-  },
-  card: {
-    border: "1px solid #ccc",
-    borderRadius: "10px",
-    padding: "20px",
-    margin: "10px",
-    textAlign: "center",
-    width: "200px",
-    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-  },
-  image: {
-    width: "100%",
-    height: "150px",
-    objectFit: "cover",
-  },
-  button: {
-    marginTop: "20px",
-    padding: "10px 20px",
-    fontSize: "16px",
-    borderRadius: "5px",
-    backgroundColor: "#28a745",
-    color: "white",
-    border: "none",
-    cursor: "pointer",
-  },
-  selectLabel: {
-    display: 'block',
-    alignItems: 'center',
-    gap: '5px',
-    cursor: 'pointer',
-  },
-};
 
 export default Home;

@@ -57,28 +57,32 @@ function RegistrationForm() {
   };
 
   return (
-    <div style={styles.container}>
-      <h2 style={styles.title}>Sign Up</h2>
+    <div className="bg-blue-100 p-6 rounded-lg w-full max-w-md mx-auto mt-12 shadow-md text-center">
+      <h2 className="mb-6 text-2xl font-semibold text-gray-800">Sign Up</h2>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
       >
         {formik => (
-          <Form style={styles.form}>
-            <div style={styles.inputContainer}>
-              <FormikControl control='input' type='text' label='Name' name='name' style={styles.input} />
+          <Form className="text-left">
+            <div className="mb-4">
+              <FormikControl control='input' type='text' label='Name' name='name' className="w-full p-3 border border-gray-300 rounded-md" />
             </div>
-            <div style={styles.inputContainer}>
-              <FormikControl control='input' type='email' label='Email' name='email' style={styles.input} />
+            <div className="mb-4">
+              <FormikControl control='input' type='email' label='Email' name='email' className="w-full p-3 border border-gray-300 rounded-md" />
             </div>
-            <div style={styles.inputContainer}>
-              <FormikControl control='input' type='password' label='Password' name='password' style={styles.input} />
+            <div className="mb-4">
+              <FormikControl control='input' type='password' label='Password' name='password' className="w-full p-3 border border-gray-300 rounded-md" />
             </div>
-            <div style={styles.inputContainer}>
-              <FormikControl control='input' type='text' label='Phone number' name='phone' style={styles.input} />
+            <div className="mb-4">
+              <FormikControl control='input' type='text' label='Phone number' name='phone' className="w-full p-3 border border-gray-300 rounded-md" />
             </div>
-            <button type='submit' disabled={!formik.isValid} style={styles.submitButton}>
+            <button 
+              type='submit' 
+              disabled={!formik.isValid} 
+              className="w-full py-3 bg-blue-500 text-white rounded-md cursor-pointer text-lg"
+            >
               Submit
             </button>
           </Form>
@@ -87,44 +91,5 @@ function RegistrationForm() {
     </div>
   );
 }
-
-const styles = {
-  container: {
-    backgroundColor: '#e3f2fd',
-    padding: '40px',
-    borderRadius: '10px',
-    width: '400px',
-    margin: '0 auto',
-    marginTop: '50px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    textAlign: 'center'
-  },
-  title: {
-    marginBottom: '20px',
-    color: '#333'
-  },
-  form: {
-    textAlign: 'left'
-  },
-  inputContainer: {
-    marginBottom: '15px'
-  },
-  input: {
-    width: '100%',
-    padding: '10px',
-    borderRadius: '5px',
-    border: '1px solid #ccc'
-  },
-  submitButton: {
-    width: '100%',
-    padding: '10px',
-    backgroundColor: '#007bff',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    fontSize: '16px'
-  }
-};
 
 export default RegistrationForm;

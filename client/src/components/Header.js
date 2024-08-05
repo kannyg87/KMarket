@@ -27,35 +27,50 @@ const Header = () => {
   };
 
   return (
-    <header className="header">
-      <div className="container">
-        <h1 className="logo">KMarket</h1>
-        <div>
-          <h1>Hello, {user?.name || "Guest"}</h1>
+    <header className="bg-gray-800 text-white p-4 md:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+        <h1 className="text-2xl font-bold">KMarket</h1>
+        <div className="mt-2 md:mt-0">
+          <h1 className="text-2xl md:text-3xl font-semibold text-gray-100 tracking-tight shadow-lg p-2 rounded-lg bg-gray-800 bg-opacity-50">
+            Hello, {user?.name || "Guest"}
+          </h1>
         </div>
-        <nav className="nav">
-          <NavLink to="/home" className="nav-link">
+
+        <nav className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 mt-4 md:mt-0">
+          <NavLink
+            to="/home"
+            className="text-white hover:underline px-3 py-2 rounded transition duration-300 ease-in-out hover:bg-gray-700"
+          >
             Home
           </NavLink>
 
           {user?.admin && (
-            <NavLink to="/admin" className="nav-link">
+            <NavLink
+              to="/admin"
+              className="text-white hover:underline px-3 py-2 rounded transition duration-300 ease-in-out hover:bg-gray-700"
+            >
               Admin
             </NavLink>
           )}
 
-          <NavLink to="/profile" className="nav-link">
+          <NavLink
+            to="/profile"
+            className="text-white hover:underline px-3 py-2 rounded transition duration-300 ease-in-out hover:bg-gray-700"
+          >
             Profile
           </NavLink>
 
           <NavLink
             to="https://6660ff4786958d10a5b9af08--stirring-panda-8201e8.netlify.app/"
             target="_blank"
-            className="nav-link"
+            className="text-white hover:underline px-3 py-2 rounded transition duration-300 ease-in-out hover:bg-gray-700"
           >
             About
           </NavLink>
-          <button onClick={handleLogout} className="nav-link button-link">
+          <button
+            onClick={handleLogout}
+            className="text-white px-3 py-2 rounded transition duration-300 ease-in-out bg-gray-600 hover:bg-gray-700"
+          >
             Logout
           </button>
         </nav>

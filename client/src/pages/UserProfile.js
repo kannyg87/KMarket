@@ -39,87 +39,38 @@ function UserProfile() {
   };
 
   return (
-    <main >
+    <main className="bg-gray-100 min-h-screen py-8 px-4">
       <Header />
-      <div style={styles.profileInfo}>
-        <h1 style={styles.title}>User Profile</h1>
-        <p style={styles.detail}><strong>Name:</strong> {user.name}</p>
-        <p style={styles.detail}><strong>Email:</strong> {user.email}</p>
-        <p style={styles.detail}><strong>Phone Number:</strong> {user.phone_number}</p>
+      <div className="bg-white shadow-lg rounded-lg p-6 mb-8 max-w-2xl mx-auto">
+        <h1 className="text-3xl font-semibold text-gray-800 mb-4">User Profile</h1>
+        <p className="text-lg text-gray-700 mb-2"><strong>Name:</strong> {user.name}</p>
+        <p className="text-lg text-gray-700 mb-2"><strong>Email:</strong> {user.email}</p>
+        <p className="text-lg text-gray-700"><strong>Phone Number:</strong> {user.phone_number}</p>
       </div>
-      <div style={styles.container}>
+      <div className="flex flex-wrap justify-center">
         {userGoods.map((item) => (
-          <div key={item.id} style={styles.card}>
-            <img src={item.img} alt={item.description} style={styles.image} />
-            <p>{item.description}</p>
-            <p>${item.price}</p>
-            <button style={styles.button} onClick={() => handleDeleteGood(item.id)}>Delete</button>
+          <div
+            key={item.id}
+            className="bg-white border border-gray-300 rounded-lg p-4 m-2 w-64 text-center shadow-md hover:shadow-lg transition-shadow duration-300"
+          >
+            <img
+              src={item.img}
+              alt={item.description}
+              className="w-full h-40 object-cover mb-3 rounded-md"
+            />
+            <p className="text-lg font-medium text-gray-800">{item.description}</p>
+            <p className="text-gray-600 text-lg">${item.price}</p>
+            <button
+              className="mt-4 py-2 px-4 bg-red-500 text-white font-semibold rounded-md shadow-md hover:bg-red-600 transition-colors duration-300"
+              onClick={() => handleDeleteGood(item.id)}
+            >
+              Delete
+            </button>
           </div>
         ))}
       </div>
     </main>
   );
 }
-
-const styles = {
-  main: {
-    fontFamily: "'Roboto', sans-serif",
-    backgroundColor: '#f9f9f9',
-    padding: '20px',
-  },
-  profileInfo: {
-    textAlign: 'center',
-    marginBottom: '40px',
-    backgroundColor: '#fff',
-    padding: '20px',
-    borderRadius: '10px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-  },
-  title: {
-    fontSize: '2.5em',
-    marginBottom: '10px',
-    color: '#333',
-  },
-  detail: {
-    fontSize: '1.2em',
-    margin: '5px 0',
-    color: '#555',
-  },
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-  },
-  card: {
-    border: '1px solid #ccc',
-    borderRadius: '10px',
-    padding: '20px',
-    margin: '10px',
-    textAlign: 'center',
-    width: '200px',
-    backgroundColor: '#fff',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-  },
-  image: {
-    width: '100%',
-    height: '150px',
-    objectFit: 'cover',
-    borderRadius: '5px',
-  },
-  button: {
-    marginTop: '10px',
-    padding: '5px 10px',
-    fontSize: '14px',
-    borderRadius: '5px',
-    backgroundColor: '#dc3545',
-    color: 'white',
-    border: 'none',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s',
-  },
-  buttonHover: {
-    backgroundColor: '#c82333',
-  },
-};
 
 export default UserProfile;
