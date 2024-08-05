@@ -214,3 +214,29 @@ then in the config file
 app.secret_key = b'Z\x9e&T\x87\xe5\xc1Q6|\xdaJ\xc7I\x87\xe6'
 ```
 
+# Tailwindcss 
+- [Tailwind CSS](https://tailwindcss.com/)
+## Folder Structure
+
+- `src/`
+  - `style.css`
+- `public/dist/`
+  - `style.css`
+  - `index.html`
+
+## Setup
+npm run build:css
+
+### Step 1: Update `package.json`
+
+Make sure your `package.json` includes the following script:
+
+```json
+"scripts": {
+  "start": "react-scripts start",
+  "build:css": "tailwind build src/style.css -o dist/style.css",
+  "test": "react-scripts test",
+  "eject": "react-scripts eject"
+}
+
+```
